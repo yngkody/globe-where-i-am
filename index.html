@@ -2,13 +2,14 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Interactive Fancy Map</title>
+  <title>Interactive Map - Dev Mode</title>
   <style>
     html, body {
       height: 100%;
       margin: 0;
       padding: 0;
       font-family: monospace;
+      background-color: #111;
     }
     #map {
       height: 100%;
@@ -18,9 +19,10 @@
       font-family: monospace;
       font-size: 14px;
       color: #fff;
-      background: rgba(0,0,0,0.7);
-      padding: 5px 10px;
-      border-radius: 5px;
+      background: rgba(0,0,0,0.8);
+      padding: 8px 12px;
+      border-radius: 6px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.5);
     }
   </style>
 </head>
@@ -31,20 +33,21 @@
   <script>
     function initMap() {
       const map = new google.maps.Map(document.getElementById("map"), {
-        zoom: 4,
-        mapTypeId: 'satellite',
-        tilt: 45,
-        heading: 90,
+        zoom: 5,
+        center: { lat: 34.0, lng: -85.0 },
+        mapTypeId: 'roadmap',
         disableDefaultUI: true,
         styles: [
-          { elementType: 'geometry', stylers: [{ color: '#1d2c4d' }] },
-          { elementType: 'labels.text.fill', stylers: [{ color: '#8ec3b9' }] },
-          { elementType: 'labels.text.stroke', stylers: [{ color: '#1a3646' }] },
-          { featureType: 'water', elementType: 'geometry', stylers: [{ color: '#0e1626' }] }
+          { elementType: 'geometry', stylers: [{ color: '#212121' }] },
+          { elementType: 'labels.text.fill', stylers: [{ color: '#ffffff' }] },
+          { elementType: 'labels.text.stroke', stylers: [{ color: '#000000' }] },
+          { featureType: 'water', elementType: 'geometry', stylers: [{ color: '#0f171e' }] },
+          { featureType: 'road', elementType: 'geometry', stylers: [{ color: '#383838' }] },
+          { featureType: 'poi', elementType: 'geometry', stylers: [{ color: '#2d2d2d' }] },
+          { featureType: 'landscape', elementType: 'geometry', stylers: [{ color: '#1e1e1e' }] }
         ]
       });
 
-      // Locations with unique colors and Squarespace URLs
       const locations = [
         { name: 'Gulfport High', lat: 30.3674, lng: -89.0928, url: 'https://yoursquarespace.com/gulfport-high', color: 'red' },
         { name: 'USM Gulf Park', lat: 30.3665, lng: -89.0833, url: 'https://yoursquarespace.com/usm-gulf-park', color: 'orange' },
@@ -63,10 +66,10 @@
           animation: google.maps.Animation.DROP,
           icon: {
             path: google.maps.SymbolPath.CIRCLE,
-            scale: 10,
+            scale: 12,
             fillColor: loc.color,
             fillOpacity: 0.9,
-            strokeWeight: 1,
+            strokeWeight: 2,
             strokeColor: '#fff'
           }
         });
@@ -75,23 +78,14 @@
           content: `<div class="info-window">${loc.name}</div>`
         });
 
-        marker.addListener('click', () => {
-          infoWindow.open(map, marker);
-          window.location.href = loc.url;
-        });
+        marker.addListener('mouseover', () => infoWindow.open(map, marker));
+        marker.addListener('mouseout', () => infoWindow.close());
+        marker.addListener('click', () => window.location.href = loc.url);
 
         bounds.extend(marker.position);
       });
 
-      // Fit map to all markers
       map.fitBounds(bounds);
-
-      // Auto-rotate map slowly
-      let heading = 0;
-      setInterval(() => {
-        heading += 0.1;
-        map.setHeading(heading);
-      }, 50);
     }
 
     window.onload = initMap;
