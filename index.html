@@ -2,38 +2,67 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Interactive Spinning Globe</title>
+  <title>Interactive Fancy Map</title>
   <style>
-    body { margin: 0; overflow: hidden; }
-    canvas { display: block; }
+    html, body {
+      height: 100%;
+      margin: 0;
+      padding: 0;
+      font-family: sans-serif;
+    }
+    #map {
+      height: 100%;
+      width: 100%;
+    }
+    .info-window {
+      font-size: 14px;
+      color: #333;
+    }
   </style>
 </head>
 <body>
-  <div id="globe"></div>
+  <div id="map"></div>
 
-  <!-- Include Three.js and Three-Globe -->
-  <script src="https://unpkg.com/three@0.152.2/build/three.min.js"></script>
-  <script src="https://unpkg.com/three-globe"></script>
-  <script src="https://unpkg.com/three/examples/js/controls/OrbitControls.js"></script>
-
+  <!-- Google Maps API -->
+  <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY"></script>
   <script>
-    // Your JavaScript code here
-    const scene = new THREE.Scene();
-    const camera = new THREE.PerspectiveCamera(40, window.innerWidth / window.innerHeight, 0.1, 1000);
-    camera.position.z = 250;
+    function initMap() {
+      // Map centered over Gulfport, MS
+      const center = { lat: 30.3674, lng: -89.0928 };
 
-    const renderer = new THREE.WebGLRenderer({ antialias: true });
-    renderer.setSize(window.innerWidth, window.innerHeight);
-    document.body.appendChild(renderer.domElement);
+      const map = new google.maps.Map(document.getElementById("map"), {
+        center: center,
+        zoom: 4,
+        mapTypeId: 'satellite', // Satellite view
+        tilt: 45,
+        heading: 90,
+        disableDefaultUI: true,
+        styles: [
+          { elementType: 'geometry', stylers: [{ color: '#1d2c4d' }] },
+          { elementType: 'labels.text.fill', stylers: [{ color: '#8ec3b9' }] },
+          { elementType: 'labels.text.stroke', stylers: [{ color: '#1a3646' }] },
+          { featureType: 'water', elementType: 'geometry', stylers: [{ color: '#0e1626' }] }
+        ]
+      });
 
-    const controls = new THREE.OrbitControls(camera, renderer.domElement);
-    controls.enableZoom = true;
-    controls.enablePan = false;
-    controls.minDistance = 120;
-    controls.maxDistance = 500;
+      // Locations
+      const locations = [
+        { name: 'Gulfport, MS', lat: 30.3674, lng: -89.0928 },
+        { name: 'Long Beach, MS', lat: 30.3670, lng: -89.1036 },
+        { name: 'New Orleans, LA', lat: 29.9511, lng: -90.0715 },
+        { name: 'New York, NY', lat: 40.7128, lng: -74.0060 }
+      ];
 
-    const Globe = new ThreeGlobe({
-      globeImageUrl: 'https://unpkg.com/three-globe/example/img/earth-dark.jpg'
+      // Create markers and info windows
+      locations.forEach(loc => {
+        const marker = new google.maps.Marker({
+          position: { lat: loc.lat, lng: loc.lng },
+          map: map,
+          title: loc.name,
+          animation: google.maps.Animation.DROP,
+          icon: {
+            url: 'https://cdn-icons-png.flaticon.com/512/684/684908.png',
+            scaledSize: new google.maps.Size(40
     });
     scene.add(Globe);
 
