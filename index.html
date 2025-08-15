@@ -8,15 +8,19 @@
       height: 100%;
       margin: 0;
       padding: 0;
-      font-family: sans-serif;
+      font-family: monospace; /* Monospaced font */
     }
     #map {
       height: 100%;
       width: 100%;
     }
     .info-window {
+      font-family: monospace;
       font-size: 14px;
-      color: #333;
+      color: #fff;
+      background: rgba(0,0,0,0.7);
+      padding: 5px 10px;
+      border-radius: 5px;
     }
   </style>
 </head>
@@ -33,7 +37,7 @@
       const map = new google.maps.Map(document.getElementById("map"), {
         center: center,
         zoom: 4,
-        mapTypeId: 'satellite', // Satellite view
+        mapTypeId: 'satellite',
         tilt: 45,
         heading: 90,
         disableDefaultUI: true,
@@ -45,15 +49,16 @@
         ]
       });
 
-      // Locations
+      // Locations with Squarespace URLs
       const locations = [
-        { name: 'Gulfport, MS', lat: 30.3674, lng: -89.0928 },
-        { name: 'Long Beach, MS', lat: 30.3670, lng: -89.1036 },
-        { name: 'New Orleans, LA', lat: 29.9511, lng: -90.0715 },
-        { name: 'New York, NY', lat: 40.7128, lng: -74.0060 }
+        { name: 'Gulfport High', lat: 30.3674, lng: -89.0928, url: 'https://yoursquarespace.com/gulfport-high' },
+        { name: 'USM Gulf Park', lat: 30.3665, lng: -89.0833, url: 'https://yoursquarespace.com/usm-gulf-park' },
+        { name: 'Tulane University', lat: 29.9410, lng: -90.1200, url: 'https://yoursquarespace.com/tulane' },
+        { name: 'NASA Stennis Space Center', lat: 30.3800, lng: -89.6044, url: 'https://yoursquarespace.com/nasa-stennis' },
+        { name: 'Harlem, NY', lat: 40.8116, lng: -73.9465, url: 'https://yoursquarespace.com/harlem-ny' }
       ];
 
-      // Create markers and info windows
+      // Create markers
       locations.forEach(loc => {
         const marker = new google.maps.Marker({
           position: { lat: loc.lat, lng: loc.lng },
@@ -67,11 +72,12 @@
         });
 
         const infoWindow = new google.maps.InfoWindow({
-          content: `<div class="info-window"><strong>${loc.name}</strong></div>`
+          content: `<div class="info-window">${loc.name}</div>`
         });
 
         marker.addListener('click', () => {
           infoWindow.open(map, marker);
+          window.location.href = loc.url; // Redirect to Squarespace page
         });
       });
 
@@ -82,7 +88,7 @@
         map.setHeading(heading);
       }, 50);
 
-      // Add zoom in/out buttons
+      // Optional zoom buttons
       const zoomInBtn = document.createElement('button');
       zoomInBtn.innerText = '+';
       zoomInBtn.style.cssText = `
