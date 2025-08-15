@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Spinning Cesium Globe</title>
+  <!-- Cesium JS and CSS from CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/cesium@1.124/Build/Cesium/Cesium.js"></script>
+  <link href="https://cdn.jsdelivr.net/npm/cesium@1.124/Build/Cesium/Widgets/widgets.css" rel="stylesheet">
+  <style>
+    html, body, #cesiumContainer { width: 100%; height: 100%; margin: 0; padding: 0; overflow: hidden; }
+  </style>
+</head>
+<body>
+  <div id="cesiumContainer"></div>
+  <script>
+    const viewer = new Cesium.Viewer('cesiumContainer', {
+      terrainProvider: Cesium.createWorldTerrain(),
+      timeline: false,
+      animation: false,
+      baseLayerPicker: false,
+      geocoder: false
+    });
+
+    const locations = [
+      { name: 'Gulfport, MS', lat: 30.3674, lng: -89.0928 },
+      { name: 'Long Beach, MS', lat: 30.3670, lng: -89.1036 },
+      { name: 'New Orleans, LA', lat: 29.9511, lng: -90.0715 },
+      { name: 'New York, NY', lat: 40.7128, lng: -74.0060 }
+    ];
+
+    const pins = [];
+    locations.forEach(loc => {
+      const entity = viewer.entities.add({
+        name: loc.name,
+        position: Cesium.Cartesian3.fromDegrees(loc.lng, loc.lat),
+        billboard: {
+          image: 'https://cdn-icons-png.flaticon.com/512/684/684908.png',
+          verticalOrigin: Cesium.VerticalOrigin.BOTTOM,
+          scale: 0.05
+        },
+        label: {
+          text: loc.name,
+          font: '14px sans-serif',
+          style: Cesium.LabelStyle.FILL_AND_OUTLINE,
+          outlineWidth: 2,
+          verticalOrigin: Cesium.VerticalOrigin.TOP,
+          pixelOffset: new Cesium.Cartesian2(0, -30),
+          show: false
+        }
+      });
+      pins.push(entity);
+    });
+
+    let lastTime = Date.now();
+    const spinRate = 0.01;
+    let highlightIndex = 0;
+    const highlightDelay = 4000;
+
+    viewer.scene.preRender.addEventListener(function() {
+      const now = Date.now();
+      const delta = (now - lastTime) / 1000;
+      lastTime = now;
+
+      viewer.camera.rotate(Cesium.Cartesian3.UNIT_Z, spinRate * delta);
+
+      if (now % highlightDelay < 50) {
+        pins.forEach((pin, i) => pin.label.show = (i === highlightIndex));
+        highlightIndex = (highlightIndex + 1) % pins.length;
+      }
+    });
+
+    viewer.camera.flyTo({
+      destination: Cesium.Cartesian3.fromDegrees(-89.0928, 30.3674, 500000)
+    });
+  </script>
+</body>
+</html>
