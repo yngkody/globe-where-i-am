@@ -2,73 +2,73 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Google Maps Globe Example</title>
+  <title>Interactive Spinning Globe</title>
   <style>
-    html, body {
-      height: 100%;
-      margin: 0;
-      padding: 0;
-    }
-    #map {
-      height: 100%;
-      width: 100%;
-    }
+    body { margin: 0; overflow: hidden; }
+    canvas { display: block; }
   </style>
 </head>
 <body>
-  <div id="map"></div>
+  <!-- Include Three.js and Three-Globe -->
+  <script src="https://unpkg.com/three@0.152.2/build/three.min.js"></script>
+  <script src="https://unpkg.com/three-globe"></script>
+  <script src="https://unpkg.com/three/examples/js/controls/OrbitControls.js"></script>
 
-  <!-- Google Maps JS API -->
-  <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCc_ZIOU8nyAs6EitoIcpLQ9RBRRkegAiQ"></script>
   <script>
-    function initMap() {
-      // Initialize map centered on Gulfport, MS
-      const center = { lat: 30.3674, lng: -89.0928 };
+    // Scene and camera
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(40, window.innerWidth/window.innerHeight, 0.1, 1000);
+    camera.position.z = 250;
 
-      const map = new google.maps.Map(document.getElementById("map"), {
-        center: center,
-        zoom: 4,
-        heading: 90,
-        tilt: 45,
-        mapTypeId: 'satellite', // Satellite view
-        disableDefaultUI: true, // clean UI
-      });
+    // Renderer
+    const renderer = new THREE.WebGLRenderer({antialias:true});
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    document.body.appendChild(renderer.domElement);
 
-      // Locations
-      const locations = [
-        { name: 'Gulfport, MS', lat: 30.3674, lng: -89.0928 },
-        { name: 'Long Beach, MS', lat: 30.3670, lng: -89.1036 },
-        { name: 'New Orleans, LA', lat: 29.9511, lng: -90.0715 },
-        { name: 'New York, NY', lat: 40.7128, lng: -74.0060 }
-      ];
+    // Controls (for user interaction)
+    const controls = new THREE.OrbitControls(camera, renderer.domElement);
+    controls.enableZoom = true;
+    controls.enablePan = false;
+    controls.minDistance = 120;
+    controls.maxDistance = 500;
 
-      // Add markers
-      locations.forEach(loc => {
-        const marker = new google.maps.Marker({
-          position: { lat: loc.lat, lng: loc.lng },
-          map: map,
-          title: loc.name
-        });
+    // Globe
+    const Globe = new ThreeGlobe({
+      globeImageUrl: 'https://unpkg.com/three-globe/example/img/earth-dark.jpg'
+    });
+    scene.add(Globe);
 
-        const infoWindow = new google.maps.InfoWindow({
-          content: `<h3>${loc.name}</h3>`
-        });
+    // Locations
+    const locations = [
+      { name: 'Gulfport, MS', lat: 30.3674, lng: -89.0928 },
+      { name: 'Long Beach, MS', lat: 30.3670, lng: -89.1036 },
+      { name: 'New Orleans, LA', lat: 29.9511, lng: -90.0715 },
+      { name: 'New York, NY', lat: 40.7128, lng: -74.0060 }
+    ];
 
-        marker.addListener("click", () => {
-          infoWindow.open(map, marker);
-        });
-      });
+    // Add markers
+    Globe.pointsData(locations)
+      .pointLat('lat')
+      .pointLng('lng')
+      .pointAltitude(0.02)
+      .pointColor(() => 'orange')
+      .pointLabel(d => d.name);
 
-      // Simple auto-rotate effect
-      let heading = 0;
-      setInterval(() => {
-        heading += 0.2; // degrees
-        map.setHeading(heading);
-      }, 50);
+    // Lighting
+    const ambientLight = new THREE.AmbientLight(0xffffff);
+    scene.add(ambientLight);
+
+    // Animation loop
+    function animate() {
+      requestAnimationFrame(animate);
+      Globe.rotation.y += 0.0015; // Auto spin
+      controls.update();
+      renderer.render(scene, camera);
     }
 
-    // Initialize the map
-    window.onload = initMap;
-  </script>
-</body>
-</html>
+    animate();
+
+    // Handle resizing
+    window.addEventListener('resize', () => {
+      camera.aspect = window.innerWidth / window.innerHeight;
+      camera.updateProjectionMatrix()
