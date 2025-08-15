@@ -8,7 +8,7 @@
       height: 100%;
       margin: 0;
       padding: 0;
-      font-family: monospace; /* Monospaced font */
+      font-family: monospace;
     }
     #map {
       height: 100%;
@@ -27,15 +27,10 @@
 <body>
   <div id="map"></div>
 
-  <!-- Google Maps API -->
-  <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCc_ZIOU8nyAs6EitoIcpLQ9RBRRkegAiQ"></script>
+  <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY"></script>
   <script>
     function initMap() {
-      // Map centered over Gulfport, MS
-      const center = { lat: 30.3674, lng: -89.0928 };
-
       const map = new google.maps.Map(document.getElementById("map"), {
-        center: center,
         zoom: 4,
         mapTypeId: 'satellite',
         tilt: 45,
@@ -49,16 +44,17 @@
         ]
       });
 
-      // Locations with Squarespace URLs
+      // Locations with unique colors and Squarespace URLs
       const locations = [
-        { name: 'Gulfport High', lat: 30.3674, lng: -89.0928, url: 'https://yoursquarespace.com/gulfport-high' },
-        { name: 'USM Gulf Park', lat: 30.3665, lng: -89.0833, url: 'https://yoursquarespace.com/usm-gulf-park' },
-        { name: 'Tulane University', lat: 29.9410, lng: -90.1200, url: 'https://yoursquarespace.com/tulane' },
-        { name: 'NASA Stennis Space Center', lat: 30.3800, lng: -89.6044, url: 'https://yoursquarespace.com/nasa-stennis' },
-        { name: 'Harlem, NY', lat: 40.8116, lng: -73.9465, url: 'https://yoursquarespace.com/harlem-ny' }
+        { name: 'Gulfport High', lat: 30.3674, lng: -89.0928, url: 'https://yoursquarespace.com/gulfport-high', color: 'red' },
+        { name: 'USM Gulf Park', lat: 30.3665, lng: -89.0833, url: 'https://yoursquarespace.com/usm-gulf-park', color: 'orange' },
+        { name: 'Tulane University', lat: 29.9410, lng: -90.1200, url: 'https://yoursquarespace.com/tulane', color: 'yellow' },
+        { name: 'NASA Stennis Space Center', lat: 30.3800, lng: -89.6044, url: 'https://yoursquarespace.com/nasa-stennis', color: 'green' },
+        { name: 'Harlem, NY', lat: 40.8116, lng: -73.9465, url: 'https://yoursquarespace.com/harlem-ny', color: 'blue' }
       ];
 
-      // Create markers
+      const bounds = new google.maps.LatLngBounds();
+
       locations.forEach(loc => {
         const marker = new google.maps.Marker({
           position: { lat: loc.lat, lng: loc.lng },
@@ -66,8 +62,12 @@
           title: loc.name,
           animation: google.maps.Animation.DROP,
           icon: {
-            url: 'https://cdn-icons-png.flaticon.com/512/684/684908.png',
-            scaledSize: new google.maps.Size(40, 40)
+            path: google.maps.SymbolPath.CIRCLE,
+            scale: 10,
+            fillColor: loc.color,
+            fillOpacity: 0.9,
+            strokeWeight: 1,
+            strokeColor: '#fff'
           }
         });
 
@@ -77,9 +77,14 @@
 
         marker.addListener('click', () => {
           infoWindow.open(map, marker);
-          window.location.href = loc.url; // Redirect to Squarespace page
+          window.location.href = loc.url;
         });
+
+        bounds.extend(marker.position);
       });
+
+      // Fit map to all markers
+      map.fitBounds(bounds);
 
       // Auto-rotate map slowly
       let heading = 0;
@@ -87,25 +92,6 @@
         heading += 0.1;
         map.setHeading(heading);
       }, 50);
-
-      // Optional zoom buttons
-      const zoomInBtn = document.createElement('button');
-      zoomInBtn.innerText = '+';
-      zoomInBtn.style.cssText = `
-        position: absolute; top: 10px; right: 10px; z-index: 5;
-        background: rgba(255,255,255,0.8); border: none; padding: 10px 15px; font-size: 18px; cursor: pointer;
-      `;
-      zoomInBtn.onclick = () => map.setZoom(map.getZoom() + 1);
-      document.body.appendChild(zoomInBtn);
-
-      const zoomOutBtn = document.createElement('button');
-      zoomOutBtn.innerText = '-';
-      zoomOutBtn.style.cssText = `
-        position: absolute; top: 50px; right: 10px; z-index: 5;
-        background: rgba(255,255,255,0.8); border: none; padding: 10px 15px; font-size: 18px; cursor: pointer;
-      `;
-      zoomOutBtn.onclick = () => map.setZoom(map.getZoom() - 1);
-      document.body.appendChild(zoomOutBtn);
     }
 
     window.onload = initMap;
