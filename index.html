@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>n Cesium Globe</title>
+  <title>new Cesium Globe</title>
   <script src="https://cdn.jsdelivr.net/npm/cesium@1.124/Build/Cesium/Cesium.js"></script>
   <link href="https://cdn.jsdelivr.net/npm/cesium@1.124/Build/Cesium/Widgets/widgets.css" rel="stylesheet">
   <style>
@@ -21,13 +21,14 @@
   <script>
     Cesium.Ion.defaultAccessToken = 'YOUR_TOKEN_HERE';
 
-    const viewer = new Cesium.Viewer('cesiumContainer', {
-      terrainProvider: new Cesium.EllipsoidTerrainProvider(),
-      timeline: false,
-      animation: false,
-      baseLayerPicker: false,
-      geocoder: false
-    });
+   const viewer = new Cesium.Viewer('cesiumContainer', {
+  terrainProvider: new Cesium.EllipsoidTerrainProvider(),
+  timeline: false,
+  animation: false,
+  baseLayerPicker: false,
+  geocoder: false
+});
+
 
     const locations = [
       { name: 'Gulfport, MS', lat: 30.3674, lng: -89.0928 }
