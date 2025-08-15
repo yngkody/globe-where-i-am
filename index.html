@@ -18,8 +18,9 @@
 <p class="p1"><span class="s1">&lt;head&gt;</span></p>
 <p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>&lt;meta charset="UTF-8"&gt;</span></p>
 <p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>&lt;title&gt;Spinning Cesium Globe&lt;/title&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>&lt;!-- Cesium JS and CSS via CDN --&gt;</span></p>
 <p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>&lt;script src="https://cdn.jsdelivr.net/npm/cesium@1.124/Build/Cesium/Cesium.js"&gt;&lt;/script&gt;</span></p>
-<p class="p1"><span class="s1">&lt;link href="https://cdn.jsdelivr.net/npm/cesium@1.124/Build/Cesium/Widgets/widgets.css" rel="stylesheet"&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>&lt;link href="https://cdn.jsdelivr.net/npm/cesium@1.124/Build/Cesium/Widgets/widgets.css" rel="stylesheet"&gt;</span></p>
 <p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>&lt;style&gt;</span></p>
 <p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>html, body, #cesiumContainer { width: 100%; height: 100%; margin: 0; padding: 0; overflow: hidden; }</span></p>
 <p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>&lt;/style&gt;</span></p>
@@ -27,7 +28,7 @@
 <p class="p1"><span class="s1">&lt;body&gt;</span></p>
 <p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>&lt;div id="cesiumContainer"&gt;&lt;/div&gt;</span></p>
 <p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>&lt;script&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>// Initialize the Cesium viewer</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>// Initialize Cesium viewer</span></p>
 <p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>const viewer = new Cesium.Viewer('cesiumContainer', {</span></p>
 <p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>terrainProvider: Cesium.createWorldTerrain(),</span></p>
 <p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>timeline: false,</span></p>
@@ -36,7 +37,7 @@
 <p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>geocoder: false</span></p>
 <p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>});</span></p>
 <p class="p2"><span class="s1"></span><br></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>// Locations to pin</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>// Locations</span></p>
 <p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>const locations = [</span></p>
 <p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>{ name: 'Gulfport, MS', lat: 30.3674, lng: -89.0928 },</span></p>
 <p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>{ name: 'Long Beach, MS', lat: 30.3670, lng: -89.1036 },</span></p>
@@ -50,7 +51,7 @@
 <p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>name: loc.name,</span></p>
 <p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>position: Cesium.Cartesian3.fromDegrees(loc.lng, loc.lat),</span></p>
 <p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>billboard: {</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">          </span>image: 'https://cdn-icons-png.flaticon.com/512/684/684908.png', // pin icon</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">          </span>image: 'https://cdn-icons-png.flaticon.com/512/684/684908.png',</span></p>
 <p class="p1"><span class="s1"><span class="Apple-converted-space">          </span>verticalOrigin: Cesium.VerticalOrigin.BOTTOM,</span></p>
 <p class="p1"><span class="s1"><span class="Apple-converted-space">          </span>scale: 0.05</span></p>
 <p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>},</span></p>
@@ -61,34 +62,32 @@
 <p class="p1"><span class="s1"><span class="Apple-converted-space">          </span>outlineWidth: 2,</span></p>
 <p class="p1"><span class="s1"><span class="Apple-converted-space">          </span>verticalOrigin: Cesium.VerticalOrigin.TOP,</span></p>
 <p class="p1"><span class="s1"><span class="Apple-converted-space">          </span>pixelOffset: new Cesium.Cartesian2(0, -30),</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">          </span>show: false // hide initially</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">          </span>show: false</span></p>
 <p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>}</span></p>
 <p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>});</span></p>
 <p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>pins.push(entity);</span></p>
 <p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>});</span></p>
 <p class="p2"><span class="s1"></span><br></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>// Spin globe and highlight pins</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>// Spin globe and cycle labels</span></p>
 <p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>let lastTime = Date.now();</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>const spinRate = 0.01; // radians per second</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>const spinRate = 0.01; // radians/sec</span></p>
 <p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>let highlightIndex = 0;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>const highlightDelay = 4000; // milliseconds</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>const highlightDelay = 4000;</span></p>
 <p class="p2"><span class="s1"></span><br></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>viewer.scene.preRender.addEventListener(function(scene, time) {</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>viewer.scene.preRender.addEventListener(function() {</span></p>
 <p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>const now = Date.now();</span></p>
 <p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>const delta = (now - lastTime) / 1000;</span></p>
 <p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>lastTime = now;</span></p>
 <p class="p2"><span class="s1"></span><br></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>// Rotate globe around Z-axis</span></p>
 <p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>viewer.camera.rotate(Cesium.Cartesian3.UNIT_Z, spinRate * delta);</span></p>
 <p class="p2"><span class="s1"></span><br></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>// Cycle pin labels</span></p>
 <p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>if (now % highlightDelay &lt; 50) {</span></p>
 <p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>pins.forEach((pin, i) =&gt; pin.label.show = (i === highlightIndex));</span></p>
 <p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>highlightIndex = (highlightIndex + 1) % pins.length;</span></p>
 <p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>}</span></p>
 <p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>});</span></p>
 <p class="p2"><span class="s1"></span><br></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>// Fly to first location on load</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>// Fly to first location</span></p>
 <p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>viewer.camera.flyTo({</span></p>
 <p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>destination: Cesium.Cartesian3.fromDegrees(-89.0928, 30.3674, 500000)</span></p>
 <p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>});</span></p>
