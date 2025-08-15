@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Where I am</title>
+  <title>Interactive Fancy Map</title>
   <style>
     html, body {
       height: 100%;
@@ -24,7 +24,7 @@
   <div id="map"></div>
 
   <!-- Google Maps API -->
-  <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCc_ZIOU8nyAs6EitoIcpLQ9RBRRkegAiQ"></script>
+  <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY"></script>
   <script>
     function initMap() {
       // Map centered over Gulfport, MS
@@ -62,29 +62,47 @@
           animation: google.maps.Animation.DROP,
           icon: {
             url: 'https://cdn-icons-png.flaticon.com/512/684/684908.png',
-            scaledSize: new google.maps.Size(40
-    });
-    scene.add(Globe);
+            scaledSize: new google.maps.Size(40, 40)
+          }
+        });
 
-    const locations = [
-      { name: 'Gulfport, MS', lat: 30.3674, lng: -89.0928 },
-      { name: 'Long Beach, MS', lat: 30.3670, lng: -89.1036 },
-      { name: 'New Orleans, LA', lat: 29.9511, lng: -90.0715 },
-      { name: 'New York, NY', lat: 40.7128, lng: -74.0060 }
-    ];
+        const infoWindow = new google.maps.InfoWindow({
+          content: `<div class="info-window"><strong>${loc.name}</strong></div>`
+        });
 
-    Globe.pointsData(locations)
-      .pointLat('lat')
-      .pointLng('lng')
-      .pointAltitude(0.02)
-      .pointColor(() => 'orange')
-      .pointLabel(d => d.name);
+        marker.addListener('click', () => {
+          infoWindow.open(map, marker);
+        });
+      });
 
-    const ambientLight = new THREE.AmbientLight(0xffffff);
-    scene.add(ambientLight);
+      // Auto-rotate map slowly
+      let heading = 0;
+      setInterval(() => {
+        heading += 0.1;
+        map.setHeading(heading);
+      }, 50);
 
-    function animate() {
-      requestAnimationFrame(animate);
-      Globe.rotation.y += 0.0015;
-      controls.update();
-      renderer.render(scene, camer
+      // Add zoom in/out buttons
+      const zoomInBtn = document.createElement('button');
+      zoomInBtn.innerText = '+';
+      zoomInBtn.style.cssText = `
+        position: absolute; top: 10px; right: 10px; z-index: 5;
+        background: rgba(255,255,255,0.8); border: none; padding: 10px 15px; font-size: 18px; cursor: pointer;
+      `;
+      zoomInBtn.onclick = () => map.setZoom(map.getZoom() + 1);
+      document.body.appendChild(zoomInBtn);
+
+      const zoomOutBtn = document.createElement('button');
+      zoomOutBtn.innerText = '-';
+      zoomOutBtn.style.cssText = `
+        position: absolute; top: 50px; right: 10px; z-index: 5;
+        background: rgba(255,255,255,0.8); border: none; padding: 10px 15px; font-size: 18px; cursor: pointer;
+      `;
+      zoomOutBtn.onclick = () => map.setZoom(map.getZoom() - 1);
+      document.body.appendChild(zoomOutBtn);
+    }
+
+    window.onload = initMap;
+  </script>
+</body>
+</html>
