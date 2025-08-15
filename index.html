@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Cesium Globe</title>
+  <title>n Cesium Globe</title>
   <script src="https://cdn.jsdelivr.net/npm/cesium@1.124/Build/Cesium/Cesium.js"></script>
   <link href="https://cdn.jsdelivr.net/npm/cesium@1.124/Build/Cesium/Widgets/widgets.css" rel="stylesheet">
   <style>
@@ -22,7 +22,7 @@
     Cesium.Ion.defaultAccessToken = 'YOUR_TOKEN_HERE';
 
     const viewer = new Cesium.Viewer('cesiumContainer', {
-      terrainProvider: Cesium.createWorldTerrain(),
+      terrainProvider: new Cesium.EllipsoidTerrainProvider(),
       timeline: false,
       animation: false,
       baseLayerPicker: false,
