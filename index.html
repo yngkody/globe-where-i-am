@@ -41,59 +41,38 @@
           { elementType: 'geometry', stylers: [{ color: '#212121' }] },
           { elementType: 'labels.text.fill', stylers: [{ color: '#ffffff' }] },
           { elementType: 'labels.text.stroke', stylers: [{ color: '#000000' }] },
-          { featureType: 'water', elementType: 'geometry', stylers: [{ color: '#0f171e' }] },
+          { featureType: 'water', elementType: 'geometry', stylers: [{ color: '#000000' }] },
           { featureType: 'road', elementType: 'geometry', stylers: [{ color: '#383838' }] },
           { featureType: 'poi', elementType: 'geometry', stylers: [{ color: '#2d2d2d' }] },
           { featureType: 'landscape', elementType: 'geometry', stylers: [{ color: '#1e1e1e' }] }
         ]
       });
 
-      // Each location with a custom icon
       const locations = [
-        { 
-          name: 'Gulfport High', 
-          lat: 30.3928, lng: -89.0284, 
-          url: 'https://yngkody.com/gulfport-high',
-          icon: 'https://maps.google.com/mapfiles/kml/shapes/schools_maps.png'
-        },
-        { 
-          name: 'USM Gulf Park', 
-          lat: 30.3473, lng: -89.1640, 
-          url: 'https://yngkody.com/usm-gulf-park',
-          icon: 'https://maps.google.com/mapfiles/kml/shapes/library_maps.png'
-        },
-        { 
-          name: 'Tulane University', 
-          lat: 29.9410, lng: -90.1200, 
-          url: 'https://yngkody.com/tulane',
-          icon: 'https://maps.google.com/mapfiles/kml/shapes/info-i_maps.png'
-        },
-        { 
-          name: 'NASA Stennis Space Center', 
-          lat: 30.3800, lng: -89.6044, 
-          url: 'https://yngkody.com/nasa-stennis',
-          icon: 'https://maps.google.com/mapfiles/kml/shapes/parks_maps.png'
-        },
-        { 
-          name: 'Harlem, NY', 
-          lat: 40.8116, lng: -73.9465, 
-          url: 'https://yngkody.com/harlem-ny',
-          icon: 'https://maps.google.com/mapfiles/kml/shapes/arts.png'
-        }
+        { name: 'Gulfport High', lat: 30.3928, lng: -89.0284, url: 'https://yngkody.com/gulfport-high', color: 'red' },
+        { name: 'USM Gulf Park', lat: 30.3473, lng: -89.1640, url: 'https://yngkody.com/usm-gulf-park', color: 'orange' },
+        { name: 'Tulane University', lat: 29.9410, lng: -90.1200, url: 'https://yngkody.com/tulane', color: 'yellow' },
+        { name: 'NASA Stennis Space Center', lat: 30.3800, lng: -89.6044, url: 'https://yngkody.com/nasa-stennis', color: 'green' },
+        { name: 'Harlem, NY', lat: 40.8116, lng: -73.9465, url: 'https://yoursquarespace.com/harlem-ny', color: 'blue' }
       ];
 
-      const msBounds = new google.maps.LatLngBounds();
+      const bounds = new google.maps.LatLngBounds();
+      const msBounds = new google.maps.LatLngBounds(); // Mississippi-only bounds
 
       locations.forEach(loc => {
         const marker = new google.maps.Marker({
           position: { lat: loc.lat, lng: loc.lng },
           map: map,
           title: loc.name,
+          animation: google.maps.Animation.DROP,
           icon: {
-            url: loc.icon,
-            scaledSize: new google.maps.Size(40, 40) // resize icons
-          },
-          animation: google.maps.Animation.DROP
+            path: google.maps.SymbolPath.CIRCLE,
+            scale: 12,
+            fillColor: loc.color,
+            fillOpacity: 0.9,
+            strokeWeight: 2,
+            strokeColor: '#fff'
+          }
         });
 
         const infoWindow = new google.maps.InfoWindow({
@@ -104,13 +83,16 @@
         marker.addListener('mouseout', () => infoWindow.close());
         marker.addListener('click', () => window.location.href = loc.url);
 
-        // Focus zoom on MS markers only
+        // Expand global bounds (all locations)
+        bounds.extend(marker.position);
+
+        // Expand Mississippi bounds (ignore Harlem)
         if (loc.name !== "Harlem, NY") {
           msBounds.extend(marker.position);
         }
       });
 
-      // Zoom to Mississippi markers on page load
+      // Zoom only to Mississippi markers on load
       map.fitBounds(msBounds);
     }
 
@@ -118,3 +100,4 @@
   </script>
 </body>
 </html>
+
