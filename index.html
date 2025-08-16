@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Interactive Map - Dev Mode</title>
+  <title>Interactive Map</title>
   <style>
     html, body {
       height: 100%;
@@ -29,19 +29,19 @@
 <body>
   <div id="map"></div>
 
-<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCc_ZIOU8nyAs6EitoIcpLQ9RBRRkegAiQ&callback=initMap" async defer></script>
+  <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCc_ZIOU8nyAs6EitoIcpLQ9RBRRkegAiQ&callback=initMap" async defer></script>
   <script>
     function initMap() {
       const map = new google.maps.Map(document.getElementById("map"), {
-        zoom: 5,
-        center: { lat: 34.0, lng: -85.0 },
+        zoom: 7,
+        center: { lat: 32.3547, lng: -89.3985 }, // Mississippi center
         mapTypeId: 'roadmap',
         disableDefaultUI: true,
         styles: [
           { elementType: 'geometry', stylers: [{ color: '#212121' }] },
           { elementType: 'labels.text.fill', stylers: [{ color: '#ffffff' }] },
           { elementType: 'labels.text.stroke', stylers: [{ color: '#000000' }] },
-          { featureType: 'water', elementType: 'geometry', stylers: [{ color: '#0f171e' }] },
+          { featureType: 'water', elementType: 'geometry', stylers: [{ color: '#000000' }] },
           { featureType: 'road', elementType: 'geometry', stylers: [{ color: '#383838' }] },
           { featureType: 'poi', elementType: 'geometry', stylers: [{ color: '#2d2d2d' }] },
           { featureType: 'landscape', elementType: 'geometry', stylers: [{ color: '#1e1e1e' }] }
@@ -49,7 +49,7 @@
       });
 
       const locations = [
-        { name: 'Gulfport High', lat: 30.3674, lng: -89.0928, url: 'https://yoursquarespace.com/gulfport-high', color: 'red' },
+        { name: 'Gulfport High', lat: 30.3928, lng: -89.0284, url: 'https://yoursquarespace.com/gulfport-high', color: 'red' },
         { name: 'USM Gulf Park', lat: 30.3473, lng: -89.1640, url: 'https://yoursquarespace.com/usm-gulf-park', color: 'orange' },
         { name: 'Tulane University', lat: 29.9410, lng: -90.1200, url: 'https://yoursquarespace.com/tulane', color: 'yellow' },
         { name: 'NASA Stennis Space Center', lat: 30.3800, lng: -89.6044, url: 'https://yoursquarespace.com/nasa-stennis', color: 'green' },
@@ -57,6 +57,7 @@
       ];
 
       const bounds = new google.maps.LatLngBounds();
+      const msBounds = new google.maps.LatLngBounds(); // Mississippi-only bounds
 
       locations.forEach(loc => {
         const marker = new google.maps.Marker({
@@ -82,10 +83,17 @@
         marker.addListener('mouseout', () => infoWindow.close());
         marker.addListener('click', () => window.location.href = loc.url);
 
+        // Expand global bounds (all locations)
         bounds.extend(marker.position);
+
+        // Expand Mississippi bounds (ignore Harlem)
+        if (loc.name !== "Harlem, NY") {
+          msBounds.extend(marker.position);
+        }
       });
 
-      map.fitBounds(bounds);
+      // Zoom only to Mississippi markers on load
+      map.fitBounds(msBounds);
     }
 
     window.onload = initMap;
