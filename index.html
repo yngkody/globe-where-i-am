@@ -48,32 +48,55 @@
         ]
       });
 
-      const locations = [
-        { name: 'Gulfport High', lat: 30.3928, lng: -89.0284, url: 'https://yoursquarespace.com/gulfport-high', color: 'red' },
-        { name: 'USM Gulf Park', lat: 30.3473, lng: -89.1640, url: 'https://yoursquarespace.com/usm-gulf-park', color: 'orange' },
-        { name: 'Tulane University', lat: 29.9410, lng: -90.1200, url: 'https://yoursquarespace.com/tulane', color: 'yellow' },
-        { name: 'NASA Stennis Space Center', lat: 30.3800, lng: -89.6044, url: 'https://yoursquarespace.com/nasa-stennis', color: 'green' },
-        { name: 'Harlem, NY', lat: 40.8116, lng: -73.9465, url: 'https://yoursquarespace.com/harlem-ny', color: 'blue' }
-      ];
+    const locations = [
+      {
+        name: "Gulfport High",
+        position: { lat: 30.4041, lng: -89.0715 },
+        url: "https://yoursite.com/gulfport-high",
+        icon: "https://maps.google.com/mapfiles/kml/shapes/schools_maps.png"
+      },
+      {
+        name: "USM Gulf Park",
+        position: { lat: 30.3655, lng: -89.1527 },
+        url: "https://yoursite.com/usm-gulfpark",
+        icon: "https://maps.google.com/mapfiles/kml/shapes/library_maps.png"
+      },
+      {
+        name: "Tulane",
+        position: { lat: 29.9405, lng: -90.1203 },
+        url: "https://yoursite.com/tulane",
+        icon: "https://maps.google.com/mapfiles/kml/shapes/info-i_maps.png"
+      },
+      {
+        name: "NASA Stennis Space Center",
+        position: { lat: 30.3658, lng: -89.5998 },
+        url: "https://yoursite.com/nasa-stennis",
+        icon: "https://maps.google.com/mapfiles/kml/shapes/parks_maps.png"
+      },
+      {
+        name: "Harlem, NY",
+        position: { lat: 40.8116, lng: -73.9465 },
+        url: "https://yoursite.com/harlem",
+        icon: "https://maps.google.com/mapfiles/kml/shapes/arts.png"
+      }
+    ];
 
       const bounds = new google.maps.LatLngBounds();
       const msBounds = new google.maps.LatLngBounds(); // Mississippi-only bounds
 
-      locations.forEach(loc => {
-        const marker = new google.maps.Marker({
-          position: { lat: loc.lat, lng: loc.lng },
-          map: map,
-          title: loc.name,
-          animation: google.maps.Animation.DROP,
-          icon: {
-            path: google.maps.SymbolPath.CIRCLE,
-            scale: 12,
-            fillColor: loc.color,
-            fillOpacity: 0.9,
-            strokeWeight: 2,
-            strokeColor: '#fff'
-          }
-        });
+    locations.forEach(loc => {
+      const marker = new google.maps.Marker({
+        position: loc.position,
+        map,
+        title: loc.name,
+        icon: loc.icon
+      });
+
+      marker.addListener("click", () => {
+        window.location.href = loc.url;
+      });
+    });
+  }
 
         const infoWindow = new google.maps.InfoWindow({
           content: `<div class="info-window">${loc.name}</div>`
