@@ -96,7 +96,9 @@
       map.fitBounds(msBounds);
     }
 
-    window.onload = initMap;
+marker.addListener('click', () => {
+  window.top.location.href = loc.url;
+});
   </script>
 </body>
 </html>
