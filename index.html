@@ -53,11 +53,10 @@
         { name: 'USM Gulf Park', lat: 30.3473, lng: -89.1640, url: 'https://yngkody.com/usm-gulf-park', color: 'orange' },
         { name: 'Tulane University', lat: 29.9410, lng: -90.1200, url: 'https://yngkody.com/tulane', color: 'yellow' },
         { name: 'NASA Stennis Space Center', lat: 30.3800, lng: -89.6044, url: 'https://yngkody.com/nasa-stennis', color: 'green' },
-        { name: 'Harlem, NY', lat: 40.8116, lng: -73.9465, url: 'https://yoursquarespace.com/harlem-ny', color: 'blue' }
+        { name: 'Harlem, NY', lat: 40.8116, lng: -73.9465, url: 'https://yngkody.com/harlem-ny', color: 'blue' }
       ];
 
-      const bounds = new google.maps.LatLngBounds();
-      const msBounds = new google.maps.LatLngBounds(); // Mississippi-only bounds
+      const msBounds = new google.maps.LatLngBounds();
 
       locations.forEach(loc => {
         const marker = new google.maps.Marker({
@@ -81,18 +80,13 @@
 
         marker.addListener('mouseover', () => infoWindow.open(map, marker));
         marker.addListener('mouseout', () => infoWindow.close());
-        marker.addListener('click', () => window.location.href = loc.url);
+        marker.addListener('click', () => window.location.href = loc.url); // click navigates
 
-        // Expand global bounds (all locations)
-        bounds.extend(marker.position);
-
-        // Expand Mississippi bounds (ignore Harlem)
-        if (loc.name !== "Harlem, NY") {
-          msBounds.extend(marker.position);
-        }
+        // Only expand bounds for Mississippi markers
+        if (loc.name !== "Harlem, NY") msBounds.extend(marker.position);
       });
 
-      // Zoom only to Mississippi markers on load
+      // Zoom to Mississippi markers on load
       map.fitBounds(msBounds);
     }
 
@@ -100,4 +94,5 @@
   </script>
 </body>
 </html>
+
 
