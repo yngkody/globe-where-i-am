@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <title>Interactive Map</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
     html, body {
       height: 100%;
@@ -34,7 +35,7 @@
     function initMap() {
       const map = new google.maps.Map(document.getElementById("map"), {
         zoom: 7,
-        center: { lat: 32.3547, lng: -89.3985 },
+        center: { lat: 32.3547, lng: -89.3985 }, // Mississippi center
         mapTypeId: 'roadmap',
         disableDefaultUI: true,
         styles: [
@@ -49,11 +50,11 @@
       });
 
       const locations = [
-        { name: 'Gulfport High', lat: 30.3928, lng: -89.0284, url: 'https://yngkody.com/gulfport-high', color: 'red' },
-        { name: 'USM Gulf Park', lat: 30.3473, lng: -89.1640, url: 'https://yngkody.com/usm-gulf-park', color: 'orange' },
-        { name: 'Tulane University', lat: 29.9410, lng: -90.1200, url: 'https://yngkody.com/tulane', color: 'yellow' },
-        { name: 'NASA Stennis Space Center', lat: 30.3800, lng: -89.6044, url: 'https://yngkody.com/nasa-stennis', color: 'green' },
-        { name: 'Harlem, NY', lat: 40.8116, lng: -73.9465, url: 'https://yngkody.com/harlem-ny', color: 'blue' }
+        { name: 'Gulfport High', lat: 30.3928, lng: -89.0284, url: 'https://www.yngkody.com/gulfport', color: 'red' },
+        { name: 'USM Gulf Park', lat: 30.3473, lng: -89.1640, url: 'https://www.yngkody.com/usm-gulf-park', color: 'orange' },
+        { name: 'Tulane University', lat: 29.9410, lng: -90.1200, url: 'https://www.yngkody.com/tulane', color: 'yellow' },
+        { name: 'NASA Stennis Space Center', lat: 30.3800, lng: -89.6044, url: 'https://www.yngkody.com/nasa-stennis', color: 'green' },
+        { name: 'Harlem, NY', lat: 40.8116, lng: -73.9465, url: 'https://www.yngkody.com/harlem-ny', color: 'blue' }
       ];
 
       const msBounds = new google.maps.LatLngBounds();
@@ -80,13 +81,10 @@
         marker.addListener('mouseover', () => infoWindow.open(map, marker));
         marker.addListener('mouseout', () => infoWindow.close());
       
-        // Correct click navigation
+        // Open in new tab on click
         marker.addListener('click', () => {
-  const link = document.createElement('a');
-  link.href = loc.url;
-  link.target = '_blank'; // Open in a new tab
-  link.click();
-});
+          window.open(loc.url, '_blank');
+        });
       
         if (loc.name !== "Harlem, NY") msBounds.extend(marker.position);
       });
@@ -97,4 +95,5 @@
   </script>
 </body>
 </html>
+
 
