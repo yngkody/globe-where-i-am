@@ -85,7 +85,7 @@
         // Click: zoom in then open page
         marker.addListener('click', () => {
           map.panTo(marker.getPosition());
-          map.setZoom(20); // zoom in
+          map.setZoom(15); // zoom in
           setTimeout(() => {
             window.open(loc.url, '_blank'); // open page in new tab
           }, 800); // 1.3s delay
