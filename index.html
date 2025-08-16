@@ -57,7 +57,6 @@
       ];
 
       const msBounds = new google.maps.LatLngBounds();
-
       locations.forEach(loc => {
         const marker = new google.maps.Marker({
           position: { lat: loc.lat, lng: loc.lng },
@@ -73,18 +72,25 @@
             strokeColor: '#fff'
           }
         });
-
+      
         const infoWindow = new google.maps.InfoWindow({
           content: `<div class="info-window">${loc.name}</div>`
         });
-
+      
         marker.addListener('mouseover', () => infoWindow.open(map, marker));
         marker.addListener('mouseout', () => infoWindow.close());
-        marker.addListener('click', () => window.location.href = loc.url); // click navigates
-
-        // Only expand bounds for Mississippi markers
+      
+        // This replaces window.location.href
+        marker.addListener('click', () => {
+          const link = document.createElement('a');
+          link.href = loc.url;
+          link.target = '_self';
+          link.click();
+        });
+      
         if (loc.name !== "Harlem, NY") msBounds.extend(marker.position);
       });
+           
 
       // Zoom to Mississippi markers on load
       map.fitBounds(msBounds);
