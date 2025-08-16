@@ -41,62 +41,60 @@
           { elementType: 'geometry', stylers: [{ color: '#212121' }] },
           { elementType: 'labels.text.fill', stylers: [{ color: '#ffffff' }] },
           { elementType: 'labels.text.stroke', stylers: [{ color: '#000000' }] },
-          { featureType: 'water', elementType: 'geometry', stylers: [{ color: '#000000' }] },
+          { featureType: 'water', elementType: 'geometry', stylers: [{ color: '#0f171e' }] },
           { featureType: 'road', elementType: 'geometry', stylers: [{ color: '#383838' }] },
           { featureType: 'poi', elementType: 'geometry', stylers: [{ color: '#2d2d2d' }] },
           { featureType: 'landscape', elementType: 'geometry', stylers: [{ color: '#1e1e1e' }] }
         ]
       });
 
-    const locations = [
-      {
-        name: "Gulfport High",
-        position: { lat: 30.4041, lng: -89.0715 },
-        url: "https://yoursite.com/gulfport-high",
-        icon: "https://maps.google.com/mapfiles/kml/shapes/schools_maps.png"
-      },
-      {
-        name: "USM Gulf Park",
-        position: { lat: 30.3655, lng: -89.1527 },
-        url: "https://yoursite.com/usm-gulfpark",
-        icon: "https://maps.google.com/mapfiles/kml/shapes/library_maps.png"
-      },
-      {
-        name: "Tulane",
-        position: { lat: 29.9405, lng: -90.1203 },
-        url: "https://yoursite.com/tulane",
-        icon: "https://maps.google.com/mapfiles/kml/shapes/info-i_maps.png"
-      },
-      {
-        name: "NASA Stennis Space Center",
-        position: { lat: 30.3658, lng: -89.5998 },
-        url: "https://yoursite.com/nasa-stennis",
-        icon: "https://maps.google.com/mapfiles/kml/shapes/parks_maps.png"
-      },
-      {
-        name: "Harlem, NY",
-        position: { lat: 40.8116, lng: -73.9465 },
-        url: "https://yoursite.com/harlem",
-        icon: "https://maps.google.com/mapfiles/kml/shapes/arts.png"
-      }
-    ];
+      // Each location with a custom icon
+      const locations = [
+        { 
+          name: 'Gulfport High', 
+          lat: 30.3928, lng: -89.0284, 
+          url: 'https://yngkody.com/gulfport-high',
+          icon: 'https://maps.google.com/mapfiles/kml/shapes/schools_maps.png'
+        },
+        { 
+          name: 'USM Gulf Park', 
+          lat: 30.3473, lng: -89.1640, 
+          url: 'https://yngkody.com/usm-gulf-park',
+          icon: 'https://maps.google.com/mapfiles/kml/shapes/library_maps.png'
+        },
+        { 
+          name: 'Tulane University', 
+          lat: 29.9410, lng: -90.1200, 
+          url: 'https://yngkody.com/tulane',
+          icon: 'https://maps.google.com/mapfiles/kml/shapes/info-i_maps.png'
+        },
+        { 
+          name: 'NASA Stennis Space Center', 
+          lat: 30.3800, lng: -89.6044, 
+          url: 'https://yngkody.com/nasa-stennis',
+          icon: 'https://maps.google.com/mapfiles/kml/shapes/parks_maps.png'
+        },
+        { 
+          name: 'Harlem, NY', 
+          lat: 40.8116, lng: -73.9465, 
+          url: 'https://yngkody.com/harlem-ny',
+          icon: 'https://maps.google.com/mapfiles/kml/shapes/arts.png'
+        }
+      ];
 
-      const bounds = new google.maps.LatLngBounds();
-      const msBounds = new google.maps.LatLngBounds(); // Mississippi-only bounds
+      const msBounds = new google.maps.LatLngBounds();
 
-    locations.forEach(loc => {
-      const marker = new google.maps.Marker({
-        position: loc.position,
-        map,
-        title: loc.name,
-        icon: loc.icon
-      });
-
-      marker.addListener("click", () => {
-        window.location.href = loc.url;
-      });
-    });
-  }
+      locations.forEach(loc => {
+        const marker = new google.maps.Marker({
+          position: { lat: loc.lat, lng: loc.lng },
+          map: map,
+          title: loc.name,
+          icon: {
+            url: loc.icon,
+            scaledSize: new google.maps.Size(40, 40) // resize icons
+          },
+          animation: google.maps.Animation.DROP
+        });
 
         const infoWindow = new google.maps.InfoWindow({
           content: `<div class="info-window">${loc.name}</div>`
@@ -106,16 +104,13 @@
         marker.addListener('mouseout', () => infoWindow.close());
         marker.addListener('click', () => window.location.href = loc.url);
 
-        // Expand global bounds (all locations)
-        bounds.extend(marker.position);
-
-        // Expand Mississippi bounds (ignore Harlem)
+        // Focus zoom on MS markers only
         if (loc.name !== "Harlem, NY") {
           msBounds.extend(marker.position);
         }
       });
 
-      // Zoom only to Mississippi markers on load
+      // Zoom to Mississippi markers on page load
       map.fitBounds(msBounds);
     }
 
