@@ -82,8 +82,11 @@
       
         // Correct click navigation
         marker.addListener('click', () => {
-          window.top.location.href = loc.url;
-        });
+  const link = document.createElement('a');
+  link.href = loc.url;
+  link.target = '_blank'; // Open in a new tab
+  link.click();
+});
       
         if (loc.name !== "Harlem, NY") msBounds.extend(marker.position);
       });
