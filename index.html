@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>New Interactive Map</title>
+  <title>Interactive Map</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
     html, body {
@@ -30,7 +30,7 @@
 <body>
   <div id="map"></div>
 
-  <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCc_ZIOU8nyAs6EitoIcpLQ9RBRRkegAiQ&callback=initMap" async defer></script>
+  <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&callback=initMap" async defer></script>
   <script>
     function initMap() {
       const map = new google.maps.Map(document.getElementById("map"), {
@@ -58,6 +58,7 @@
       ];
 
       const msBounds = new google.maps.LatLngBounds();
+
       locations.forEach(loc => {
         const marker = new google.maps.Marker({
           position: { lat: loc.lat, lng: loc.lng },
@@ -73,19 +74,23 @@
             strokeColor: '#fff'
           }
         });
-      
+
         const infoWindow = new google.maps.InfoWindow({
           content: `<div class="info-window">${loc.name}</div>`
         });
-      
+
         marker.addListener('mouseover', () => infoWindow.open(map, marker));
         marker.addListener('mouseout', () => infoWindow.close());
-      
-        // Open in new tab on click
+
+        // Click: zoom in then open page
         marker.addListener('click', () => {
-          window.open(loc.url, '_blank');
+          map.panTo(marker.getPosition());
+          map.setZoom(12); // zoom in
+          setTimeout(() => {
+            window.open(loc.url, '_blank'); // open page in new tab
+          }, 800); // 0.8s delay
         });
-      
+
         if (loc.name !== "Harlem, NY") msBounds.extend(marker.position);
       });
 
@@ -95,5 +100,6 @@
   </script>
 </body>
 </html>
+
 
 
