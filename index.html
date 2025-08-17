@@ -33,79 +33,78 @@
   <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCc_ZIOU8nyAs6EitoIcpLQ9RBRRkegAiQ&callback=initMap" async defer></script>
   <script>
     
-    function initMap() {
-      const map = new google.maps.Map(document.getElementById("map"), {
-        zoom: 7,
-        center: { lat: 32.3547, lng: -89.3985 }, // Mississippi center
-        mapTypeId: 'roadmap',
-        disableDefaultUI: true,
-        styles: [
-          { elementType: 'geometry', stylers: [{ color: '#212121' }] },
-          { elementType: 'labels.text.fill', stylers: [{ color: '#ffffff' }] },
-          { elementType: 'labels.text.stroke', stylers: [{ color: '#000000' }] },
-          { featureType: 'water', elementType: 'geometry', stylers: [{ color: '#000000' }] },
-          { featureType: 'road', elementType: 'geometry', stylers: [{ color: '#383838' }] },
-          { featureType: 'poi', elementType: 'geometry', stylers: [{ color: '#2d2d2d' }] },
-          { featureType: 'landscape', elementType: 'geometry', stylers: [{ color: '#1e1e1e' }] }
-        ]
-      });
+function initMap() {
+  const map = new google.maps.Map(document.getElementById("map"), {
+    zoom: 7,
+    center: { lat: 32.3547, lng: -89.3985 },
+    mapTypeId: 'roadmap',
+    disableDefaultUI: true,
+    styles: [
+      { elementType: 'geometry', stylers: [{ color: '#212121' }] },
+      { elementType: 'labels.text.fill', stylers: [{ color: '#ffffff' }] },
+      { elementType: 'labels.text.stroke', stylers: [{ color: '#000000' }] },
+      { featureType: 'water', elementType: 'geometry', stylers: [{ color: '#000000' }] },
+      { featureType: 'road', elementType: 'geometry', stylers: [{ color: '#383838' }] },
+      { featureType: 'poi', elementType: 'geometry', stylers: [{ color: '#2d2d2d' }] },
+      { featureType: 'landscape', elementType: 'geometry', stylers: [{ color: '#1e1e1e' }] }
+    ]
+  });
 
-      const locations = [
-        { name: 'Gulfport High', lat: 30.3928, lng: -89.0284, url: 'https://www.yngkody.com/gulfport-high', color: 'red' },
-        { name: 'USM Gulf Park', lat: 30.3473, lng: -89.1640, url: 'https://www.yngkody.com/usm-gulf-park', color: 'orange' },
-        { name: 'NASA Stennis Space Center', lat: 30.3800, lng: -89.6044, url: 'https://www.yngkody.com/nasa-stennis', color: 'green' },
-        { name: 'Harlem, NY', lat: 40.8116, lng: -73.9465, url: 'https://www.yngkody.com/harlem-ny', color: 'blue' }
-      ];
+  const locations = [
+    { name: 'Gulfport High', lat: 30.3928, lng: -89.0284, url: 'https://www.yngkody.com/gulfport-high', color: 'red' },
+    { name: 'USM Gulf Park', lat: 30.3473, lng: -89.1640, url: 'https://www.yngkody.com/usm-gulf-park', color: 'orange' },
+    { name: 'NASA Stennis Space Center', lat: 30.3800, lng: -89.6044, url: 'https://www.yngkody.com/nasa-stennis', color: 'green' },
+    { name: 'Harlem, NY', lat: 40.8116, lng: -73.9465, url: 'https://www.yngkody.com/harlem-ny', color: 'blue' }
+  ];
 
-      const msBounds = new google.maps.LatLngBounds();
+  const msBounds = new google.maps.LatLngBounds();
 
-      locations.forEach(loc => {
-        const marker = new google.maps.Marker({
-          position: { lat: loc.lat, lng: loc.lng },
-          map: map,
-          title: loc.name,
-          animation: google.maps.Animation.DROP,
-          icon: {
-            path: google.maps.SymbolPath.CIRCLE,
-            scale: 12,
-            fillColor: loc.color,
-            fillOpacity: 0.9,
-            strokeWeight: 2,
-            strokeColor: '#fff'
-          }
-        });
-
-        const infoWindow = new google.maps.InfoWindow({
-          content: `<div class="info-window">${loc.name}</div>`
-        });
-
-        marker.addListener('mouseover', () => infoWindow.open(map, marker));
-        marker.addListener('mouseout', () => infoWindow.close());
-
-        // Click: zoom in then open page
-        marker.addListener('click', () => {
-          map.panTo(marker.getPosition());
-          map.setZoom(12); // zoom in
-          setTimeout(() => {
-            window.open(loc.url, '_blank'); // open page in new tab
-          }, 800); // 0.8s delay
-        });
-
-        if (loc.name !== "Harlem, NY") msBounds.extend(marker.position);
-      });
-
-      // Zoom to Mississippi markers on load
-      map.fitBounds(msBounds);
-
-      window.addEventListener('load', () => {
-      const hash = window.location.hash; // e.g., #NY
-      if(hash === '#NY') {
-        // Replace this with your map’s zoom function
-        zoomToCoordinates(40.8116, -73.9465, 5); // lat, lng, zoom level
+  locations.forEach(loc => {
+    const marker = new google.maps.Marker({
+      position: { lat: loc.lat, lng: loc.lng },
+      map: map,
+      title: loc.name,
+      animation: google.maps.Animation.DROP,
+      icon: {
+        path: google.maps.SymbolPath.CIRCLE,
+        scale: 12,
+        fillColor: loc.color,
+        fillOpacity: 0.9,
+        strokeWeight: 2,
+        strokeColor: '#fff'
       }
     });
 
-    }
+    const infoWindow = new google.maps.InfoWindow({
+      content: `<div class="info-window">${loc.name}</div>`
+    });
+
+    marker.addListener('mouseover', () => infoWindow.open(map, marker));
+    marker.addListener('mouseout', () => infoWindow.close());
+
+    marker.addListener('click', () => {
+      map.panTo(marker.getPosition());
+      map.setZoom(12);
+      setTimeout(() => {
+        window.open(loc.url, '_blank');
+      }, 800);
+    });
+
+    if (loc.name !== "Harlem, NY") msBounds.extend(marker.position);
+  });
+
+  // Zoom to Mississippi markers on load
+  map.fitBounds(msBounds);
+
+  // Check hash for NY
+  if (window.location.hash === '#NY') {
+    const nyPos = { lat: 40.8116, lng: -73.9465 };
+    map.setCenter(nyPos);
+    map.setZoom(12);
+  }
+}
+
+    
   </script>
 </body>
 </html>
