@@ -32,6 +32,7 @@
 
   <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCc_ZIOU8nyAs6EitoIcpLQ9RBRRkegAiQ&callback=initMap" async defer></script>
   <script>
+    
     function initMap() {
       const map = new google.maps.Map(document.getElementById("map"), {
         zoom: 7,
@@ -95,6 +96,15 @@
 
       // Zoom to Mississippi markers on load
       map.fitBounds(msBounds);
+
+      window.addEventListener('load', () => {
+      const hash = window.location.hash; // e.g., #NY
+      if(hash === '#NY') {
+        // Replace this with your map’s zoom function
+        zoomToCoordinates(40.7128, -74.0060, 5); // lat, lng, zoom level
+      }
+    });
+
     }
   </script>
 </body>
