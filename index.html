@@ -2,16 +2,15 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Interactive Map</title>
+  <title>Interactive Map - Neon Style</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
-    /* ====== Base ====== */
     html, body {
       height: 100%;
       margin: 0;
       padding: 0;
+      background: #111;
       font-family: monospace;
-      background-color: #111;
       color: #fff;
     }
     #map {
@@ -19,46 +18,69 @@
       width: 100%;
     }
 
-    /* ====== Go to NY button ====== */
+    /* ===== Neon Button ===== */
     #go-ny {
       position: absolute;
       top: 20px;
       left: 50%;
       transform: translateX(-50%);
       z-index: 10;
-      padding: 12px 20px 16px 20px;
-      font-family: monospace;
-      font-size: 23px;
+      padding: 12px 24px;
+      font-size: 22px;
       color: #00ffff;
-      background-color: #000;
+      background: #000;
       border: 3px solid #00ffff;
-      border-radius: 10px;
+      border-radius: 12px;
       cursor: pointer;
-      text-shadow: 0 0 8px #ff00ff, 0 0 12px #00ffff;
+      text-shadow: 0 0 8px #ff00ff, 0 0 14px #00ffff;
       transition: 0.3s;
     }
     #go-ny:hover {
-      background-color: #00ffff;
-      color: #000000;
-      text-shadow: 0 0 15px #ff00ff, 0 0 20px #00ffff;
+      background: #00ffff;
+      color: #000;
+      text-shadow: 0 0 18px #ff00ff, 0 0 24px #00ffff;
     }
 
-    /* ====== Info Windows ====== */
+    /* ===== Neon Info Windows ===== */
     .info-window {
       font-size: 15px;
       font-weight: bold;
       padding: 10px 14px;
-      border-radius: 8px;
-      background: rgba(0,0,0,0.85);
-      color: #00ffff;
-      text-shadow: 0 0 8px #ff00ff, 0 0 12px #00ffff;
+      border-radius: 10px;
+      background: rgba(0,0,0,0.9);
+      color: #0ff;
+      text-shadow: 0 0 6px #ff00ff, 0 0 10px #00ffff;
       border: 2px solid #ff00ff;
-      box-shadow: 0 0 12px #00ffff, 0 0 18px #ff00ff;
+      box-shadow: 0 0 15px #00ffff, 0 0 25px #ff00ff;
     }
 
-    /* ====== Neon Glow for Markers ====== */
-    .gm-style img[src*="data:image/svg+xml"] {
-      filter: drop-shadow(0 0 6px #0ff) drop-shadow(0 0 12px #ff00ff);
+    /* ===== Animated Marker Styles ===== */
+    .neon-marker {
+      position: absolute;
+      transform: translate(-50%, -50%);
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      background: radial-gradient(circle, #fff 0%, #0ff 40%, transparent 70%);
+      box-shadow: 0 0 20px #0ff, 0 0 40px #ff00ff;
+    }
+    .neon-marker::before {
+      content: "";
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 60px;
+      height: 60px;
+      border: 2px solid #0ff;
+      border-radius: 50%;
+      transform: translate(-50%, -50%);
+      animation: pulse 2s infinite;
+      opacity: 0.6;
+    }
+    @keyframes pulse {
+      0% { transform: translate(-50%, -50%) scale(0.6); opacity: 0.7; }
+      50% { transform: translate(-50%, -50%) scale(1.2); opacity: 0.2; }
+      100% { transform: translate(-50%, -50%) scale(0.6); opacity: 0.7; }
     }
   </style>
 </head>
@@ -66,88 +88,96 @@
   <button id="go-ny">Go to NY</button>
   <div id="map"></div>
 
-  <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCc_ZIOU8nyAs6EitoIcpLQ9RBRRkegAiQ&callback=initMap" async defer></script>
+  <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_KEY&callback=initMap" async defer></script>
   <script>
     function initMap() {
       const map = new google.maps.Map(document.getElementById("map"), {
         zoom: 7,
-        center: { lat: 32.3547, lng: -89.3985 }, // Mississippi
-        mapTypeId: 'roadmap',
+        center: { lat: 32.3547, lng: -89.3985 },
         disableDefaultUI: true,
         styles: [
-          { elementType: 'geometry', stylers: [{ color: '#212121' }] },
-          { elementType: 'labels.text.fill', stylers: [{ color: '#ffffff' }] },
-          { elementType: 'labels.text.stroke', stylers: [{ color: '#000000' }] },
-          { featureType: 'water', elementType: 'geometry', stylers: [{ color: '#000000' }] },
-          { featureType: 'road', elementType: 'geometry', stylers: [{ color: '#383838' }] },
-          { featureType: 'poi', elementType: 'geometry', stylers: [{ color: '#2d2d2d' }] },
-          { featureType: 'landscape', elementType: 'geometry', stylers: [{ color: '#1e1e1e' }] }
+          { elementType: 'geometry', stylers: [{ color: '#111' }] },
+          { elementType: 'labels.text.fill', stylers: [{ color: '#fff' }] },
+          { elementType: 'labels.text.stroke', stylers: [{ color: '#000' }] },
+          { featureType: 'water', elementType: 'geometry', stylers: [{ color: '#000' }] },
+          { featureType: 'road', elementType: 'geometry', stylers: [{ color: '#333' }] },
+          { featureType: 'poi', elementType: 'geometry', stylers: [{ color: '#222' }] },
+          { featureType: 'landscape', elementType: 'geometry', stylers: [{ color: '#1a1a1a' }] }
         ]
       });
 
       const locations = [
-        { name: 'Gulfport High', lat: 30.3928, lng: -89.0284, url: 'https://www.yngkody.com/gulfport-high', color: '#ff4444' },
-        { name: 'USM Gulf Park', lat: 30.3473, lng: -89.1640, url: 'https://www.yngkody.com/usm-gulf-park', color: '#ffaa00' },
-        { name: 'NASA Stennis Space Center', lat: 30.3800, lng: -89.6044, url: 'https://www.yngkody.com/nasa-stennis', color: '#44ff44' },
-        { name: 'Harlem, NY', lat: 40.8116, lng: -73.9465, url: 'https://www.yngkody.com/harlem-ny', color: '#4488ff' }
+        { name: 'Gulfport High', lat: 30.3928, lng: -89.0284, url: 'https://www.yngkody.com/gulfport-high' },
+        { name: 'USM Gulf Park', lat: 30.3473, lng: -89.1640, url: 'https://www.yngkody.com/usm-gulf-park' },
+        { name: 'NASA Stennis Space Center', lat: 30.3800, lng: -89.6044, url: 'https://www.yngkody.com/nasa-stennis' },
+        { name: 'Harlem, NY', lat: 40.8116, lng: -73.9465, url: 'https://www.yngkody.com/harlem-ny' }
       ];
 
       const msBounds = new google.maps.LatLngBounds();
 
+      // Use OverlayView for custom HTML markers
+      class NeonMarker extends google.maps.OverlayView {
+        constructor(position, map, name, url) {
+          super();
+          this.position = position;
+          this.map = map;
+          this.name = name;
+          this.url = url;
+          this.div = null;
+          this.setMap(map);
+        }
+        onAdd() {
+          this.div = document.createElement("div");
+          this.div.className = "neon-marker";
+          this.div.title = this.name;
+          this.div.addEventListener("click", () => {
+            map.panTo(this.position);
+            map.setZoom(12);
+            setTimeout(() => window.open(this.url, "_blank"), 600);
+          });
+          const panes = this.getPanes();
+          panes.overlayMouseTarget.appendChild(this.div);
+        }
+        draw() {
+          const overlayProjection = this.getProjection();
+          const pos = overlayProjection.fromLatLngToDivPixel(this.position);
+          if (pos) {
+            this.div.style.left = pos.x + "px";
+            this.div.style.top = pos.y + "px";
+          }
+        }
+        onRemove() {
+          if (this.div) {
+            this.div.parentNode.removeChild(this.div);
+            this.div = null;
+          }
+        }
+      }
+
       locations.forEach(loc => {
-        // Retro neon radar ring marker
-        const iconSVG = {
-          path: "M 0,-12 A 12,12 0 1,0 0.0001,-12 Z M 0,-6 A 6,6 0 1,1 0.0001,-6 Z",
-          fillColor: loc.color,
-          fillOpacity: 0.9,
-          scale: 1.5,
-          strokeColor: "#00ffff",
-          strokeOpacity: 0.9,
-          strokeWeight: 2
-        };
-
-        const marker = new google.maps.Marker({
-          position: { lat: loc.lat, lng: loc.lng },
-          map: map,
-          title: loc.name,
-          animation: google.maps.Animation.DROP,
-          icon: iconSVG
-        });
-
-        const infoWindow = new google.maps.InfoWindow({
-          content: `<div class="info-window">${loc.name}</div>`
-        });
-
-        marker.addListener('mouseover', () => infoWindow.open(map, marker));
-        marker.addListener('mouseout', () => infoWindow.close());
-
-        marker.addListener('click', () => {
-          map.panTo(marker.getPosition());
-          map.setZoom(12);
-          setTimeout(() => {
-            window.open(loc.url, '_blank');
-          }, 800);
-        });
-
-        if (loc.name !== "Harlem, NY") msBounds.extend(marker.position);
+        new NeonMarker(
+          new google.maps.LatLng(loc.lat, loc.lng),
+          map,
+          loc.name,
+          loc.url
+        );
+        if (loc.name !== "Harlem, NY") {
+          msBounds.extend({ lat: loc.lat, lng: loc.lng });
+        }
       });
 
-      // Fit Mississippi markers on load
       map.fitBounds(msBounds);
 
-      // Function to zoom to NY
+      // Zoom to NY function
       function zoomToNY() {
         const nyPos = { lat: 40.8116, lng: -73.9465 };
         map.panTo(nyPos);
         map.setZoom(12);
       }
 
-      // Check hash for #NY
-      if (window.location.hash === '#NY') zoomToNY();
-
-      // Button listener
-      document.getElementById('go-ny').addEventListener('click', () => {
-        window.location.hash = '#NY';
+      if (window.location.hash === "#NY") zoomToNY();
+      document.getElementById("go-ny").addEventListener("click", () => {
+        window.location.hash = "#NY";
         zoomToNY();
       });
     }
