@@ -48,7 +48,7 @@
       padding: 10px 14px;
       border-radius: 10px;
       background: rgba(0,0,0,0.9);
-      color: #fff; /* fixed */
+      color: #fff;
       text-shadow: 0 0 6px #ff00ff, 0 0 10px #00ffff;
       border: 2px solid #ff00ff;
       box-shadow: 0 0 15px #00ffff, 0 0 25px #ff00ff;
@@ -89,11 +89,10 @@
       pointer-events: none; /* so clicks still hit the marker */
     }
 
-    /* ===== Color Variants ===== */
-    .red   { color: #ff3333; box-shadow: 0 0 20px #ff3333, 0 0 40px #ff7777; }
-    .orange{ color: #ffaa33; box-shadow: 0 0 20px #ffaa33, 0 0 40px #ffcc77; }
-    .green { color: #33ff77; box-shadow: 0 0 20px #33ff77, 0 0 40px #77ffaa; }
-    .blue  { color: #3399ff; box-shadow: 0 0 20px #3399ff, 0 0 40px #77ccff; }
+    /* ===== Color Variants (neon pink, blue, purple) ===== */
+    .pink   { color: #ff4de1; box-shadow: 0 0 20px #ff4de1, 0 0 40px #ff80f7; }
+    .blue   { color: #00f0ff; box-shadow: 0 0 20px #00f0ff, 0 0 40px #66ffff; }
+    .purple { color: #a64dff; box-shadow: 0 0 20px #a64dff, 0 0 40px #d580ff; }
 
     @keyframes pulse {
       0% { transform: translate(-50%, -50%) scale(0.6); opacity: 0.7; }
@@ -125,10 +124,10 @@
       });
 
       const locations = [
-        { name: 'Gulfport High', lat: 30.3928, lng: -89.0284, url: 'https://www.yngkody.com/gulfport-high', colorClass: 'red' },
-        { name: 'USM Gulf Park', lat: 30.3473, lng: -89.1640, url: 'https://www.yngkody.com/usm-gulf-park', colorClass: 'orange' },
-        { name: 'NASA Stennis Space Center', lat: 30.3800, lng: -89.6044, url: 'https://www.yngkody.com/nasa-stennis', colorClass: 'green' },
-        { name: 'Harlem, NY', lat: 40.8116, lng: -73.9465, url: 'https://www.yngkody.com/harlem-ny', colorClass: 'blue' }
+        { name: 'Gulfport High', lat: 30.3928, lng: -89.0284, url: 'https://www.yngkody.com/gulfport-high', colorClass: 'pink' },
+        { name: 'USM Gulf Park', lat: 30.3473, lng: -89.1640, url: 'https://www.yngkody.com/usm-gulf-park', colorClass: 'blue' },
+        { name: 'NASA Stennis Space Center', lat: 30.3800, lng: -89.6044, url: 'https://www.yngkody.com/nasa-stennis', colorClass: 'purple' },
+        { name: 'Harlem, NY', lat: 40.8116, lng: -73.9465, url: 'https://www.yngkody.com/harlem-ny', colorClass: 'pink' }
       ];
 
       const msBounds = new google.maps.LatLngBounds();
