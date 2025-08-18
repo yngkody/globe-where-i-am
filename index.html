@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Interactive Map - Neon Style</title>
+  <title>Interactive Map - Neon Arcade</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
     html, body {
@@ -54,15 +54,15 @@
       box-shadow: 0 0 15px #00ffff, 0 0 25px #ff00ff;
     }
 
-    /* ===== Animated Marker Styles ===== */
+    /* ===== Animated Neon Marker Base ===== */
     .neon-marker {
       position: absolute;
       transform: translate(-50%, -50%);
-      width: 30px;
-      height: 30px;
+      width: 28px;
+      height: 28px;
       border-radius: 50%;
-      background: radial-gradient(circle, #fff 0%, #0ff 40%, transparent 70%);
-      box-shadow: 0 0 20px #0ff, 0 0 40px #ff00ff;
+      background: radial-gradient(circle, #fff 0%, currentColor 40%, transparent 70%);
+      cursor: pointer;
     }
     .neon-marker::before {
       content: "";
@@ -71,15 +71,22 @@
       left: 50%;
       width: 60px;
       height: 60px;
-      border: 2px solid #0ff;
+      border: 2px solid currentColor;
       border-radius: 50%;
       transform: translate(-50%, -50%);
       animation: pulse 2s infinite;
       opacity: 0.6;
     }
+
+    /* ===== Color Variants ===== */
+    .red   { color: #ff3333; box-shadow: 0 0 20px #ff3333, 0 0 40px #ff7777; }
+    .orange{ color: #ffaa33; box-shadow: 0 0 20px #ffaa33, 0 0 40px #ffcc77; }
+    .green { color: #33ff77; box-shadow: 0 0 20px #33ff77, 0 0 40px #77ffaa; }
+    .blue  { color: #3399ff; box-shadow: 0 0 20px #3399ff, 0 0 40px #77ccff; }
+
     @keyframes pulse {
       0% { transform: translate(-50%, -50%) scale(0.6); opacity: 0.7; }
-      50% { transform: translate(-50%, -50%) scale(1.2); opacity: 0.2; }
+      50% { transform: translate(-50%, -50%) scale(1.3); opacity: 0.2; }
       100% { transform: translate(-50%, -50%) scale(0.6); opacity: 0.7; }
     }
   </style>
@@ -107,28 +114,28 @@
       });
 
       const locations = [
-        { name: 'Gulfport High', lat: 30.3928, lng: -89.0284, url: 'https://www.yngkody.com/gulfport-high' },
-        { name: 'USM Gulf Park', lat: 30.3473, lng: -89.1640, url: 'https://www.yngkody.com/usm-gulf-park' },
-        { name: 'NASA Stennis Space Center', lat: 30.3800, lng: -89.6044, url: 'https://www.yngkody.com/nasa-stennis' },
-        { name: 'Harlem, NY', lat: 40.8116, lng: -73.9465, url: 'https://www.yngkody.com/harlem-ny' }
+        { name: 'Gulfport High', lat: 30.3928, lng: -89.0284, url: 'https://www.yngkody.com/gulfport-high', colorClass: 'red' },
+        { name: 'USM Gulf Park', lat: 30.3473, lng: -89.1640, url: 'https://www.yngkody.com/usm-gulf-park', colorClass: 'orange' },
+        { name: 'NASA Stennis Space Center', lat: 30.3800, lng: -89.6044, url: 'https://www.yngkody.com/nasa-stennis', colorClass: 'green' },
+        { name: 'Harlem, NY', lat: 40.8116, lng: -73.9465, url: 'https://www.yngkody.com/harlem-ny', colorClass: 'blue' }
       ];
 
       const msBounds = new google.maps.LatLngBounds();
 
-      // Use OverlayView for custom HTML markers
       class NeonMarker extends google.maps.OverlayView {
-        constructor(position, map, name, url) {
+        constructor(position, map, name, url, colorClass) {
           super();
           this.position = position;
           this.map = map;
           this.name = name;
           this.url = url;
+          this.colorClass = colorClass;
           this.div = null;
           this.setMap(map);
         }
         onAdd() {
           this.div = document.createElement("div");
-          this.div.className = "neon-marker";
+          this.div.className = "neon-marker " + this.colorClass;
           this.div.title = this.name;
           this.div.addEventListener("click", () => {
             map.panTo(this.position);
@@ -159,7 +166,8 @@
           new google.maps.LatLng(loc.lat, loc.lng),
           map,
           loc.name,
-          loc.url
+          loc.url,
+          loc.colorClass
         );
         if (loc.name !== "Harlem, NY") {
           msBounds.extend({ lat: loc.lat, lng: loc.lng });
