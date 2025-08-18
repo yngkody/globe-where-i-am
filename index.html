@@ -5,59 +5,64 @@
   <title>Interactive Map</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
+    /* ====== Base ====== */
     html, body {
       height: 100%;
       margin: 0;
       padding: 0;
       font-family: monospace;
       background-color: #111;
+      color: #fff;
     }
     #map {
       height: 100%;
       width: 100%;
     }
-    .info-window {
+
+    /* ====== Go to NY button ====== */
+    #go-ny {
+      position: absolute;
+      top: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 10;
+      padding: 12px 20px 16px 20px;
       font-family: monospace;
-      font-size: 14px;
-      color: #fff;
-      background: rgba(0,0,0,0.8);
-      padding: 8px 12px;
-      border-radius: 6px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.5);
+      font-size: 23px;
+      color: #00ffff;
+      background-color: #000;
+      border: 3px solid #00ffff;
+      border-radius: 10px;
+      cursor: pointer;
+      text-shadow: 0 0 8px #ff00ff, 0 0 12px #00ffff;
+      transition: 0.3s;
+    }
+    #go-ny:hover {
+      background-color: #00ffff;
+      color: #000000;
+      text-shadow: 0 0 15px #ff00ff, 0 0 20px #00ffff;
     }
 
-    /* Go to NY button */
+    /* ====== Info Windows ====== */
+    .info-window {
+      font-size: 15px;
+      font-weight: bold;
+      padding: 10px 14px;
+      border-radius: 8px;
+      background: rgba(0,0,0,0.85);
+      color: #00ffff;
+      text-shadow: 0 0 8px #ff00ff, 0 0 12px #00ffff;
+      border: 2px solid #ff00ff;
+      box-shadow: 0 0 12px #00ffff, 0 0 18px #ff00ff;
+    }
 
-  /* Go to NY button - retro arcade style */
-#go-ny {
-  position: absolute;
-  top: 20px;
-  left: 50%;
-  transform: translateX(-50%);
-  z-index: 10;
-  padding: 12px 20px 16px 20px; /* extra bottom padding */
-  font-family: monospace;
-  font-size: 23px;
-  color: #00ffff;
-  background-color: #000000; /* correct black background */
-  border: 3px solid #00ffff;
-  border-radius: 10px;
-  cursor: pointer;
-  text-shadow: 0 0 8px #ff00ff, 0 0 12px #00ffff;
-  transition: 0.3s;
-}
-
-#go-ny:hover {
-  background-color: #00ffff;
-  color: #000000;
-  text-shadow: 0 0 15px #ff00ff, 0 0 20px #00ffff;
-}
-
-
+    /* ====== Neon Glow for Markers ====== */
+    .gm-style img[src*="data:image/svg+xml"] {
+      filter: drop-shadow(0 0 6px #0ff) drop-shadow(0 0 12px #ff00ff);
+    }
   </style>
 </head>
 <body>
-
   <button id="go-ny">Go to NY</button>
   <div id="map"></div>
 
@@ -66,7 +71,7 @@
     function initMap() {
       const map = new google.maps.Map(document.getElementById("map"), {
         zoom: 7,
-        center: { lat: 32.3547, lng: -89.3985 }, // Mississippi center
+        center: { lat: 32.3547, lng: -89.3985 }, // Mississippi
         mapTypeId: 'roadmap',
         disableDefaultUI: true,
         styles: [
@@ -81,28 +86,32 @@
       });
 
       const locations = [
-        { name: 'Gulfport High', lat: 30.3928, lng: -89.0284, url: 'https://www.yngkody.com/gulfport-high', color: 'red' },
-        { name: 'USM Gulf Park', lat: 30.3473, lng: -89.1640, url: 'https://www.yngkody.com/usm-gulf-park', color: 'orange' },
-        { name: 'NASA Stennis Space Center', lat: 30.3800, lng: -89.6044, url: 'https://www.yngkody.com/nasa-stennis', color: 'green' },
-        { name: 'Harlem, NY', lat: 40.8116, lng: -73.9465, url: 'https://www.yngkody.com/harlem-ny', color: 'blue' }
+        { name: 'Gulfport High', lat: 30.3928, lng: -89.0284, url: 'https://www.yngkody.com/gulfport-high', color: '#ff4444' },
+        { name: 'USM Gulf Park', lat: 30.3473, lng: -89.1640, url: 'https://www.yngkody.com/usm-gulf-park', color: '#ffaa00' },
+        { name: 'NASA Stennis Space Center', lat: 30.3800, lng: -89.6044, url: 'https://www.yngkody.com/nasa-stennis', color: '#44ff44' },
+        { name: 'Harlem, NY', lat: 40.8116, lng: -73.9465, url: 'https://www.yngkody.com/harlem-ny', color: '#4488ff' }
       ];
 
       const msBounds = new google.maps.LatLngBounds();
 
       locations.forEach(loc => {
+        // Retro neon radar ring marker
+        const iconSVG = {
+          path: "M 0,-12 A 12,12 0 1,0 0.0001,-12 Z M 0,-6 A 6,6 0 1,1 0.0001,-6 Z",
+          fillColor: loc.color,
+          fillOpacity: 0.9,
+          scale: 1.5,
+          strokeColor: "#00ffff",
+          strokeOpacity: 0.9,
+          strokeWeight: 2
+        };
+
         const marker = new google.maps.Marker({
           position: { lat: loc.lat, lng: loc.lng },
           map: map,
           title: loc.name,
           animation: google.maps.Animation.DROP,
-          icon: {
-            path: google.maps.SymbolPath.CIRCLE,
-            scale: 12,
-            fillColor: loc.color,
-            fillOpacity: 0.9,
-            strokeWeight: 2,
-            strokeColor: '#fff'
-          }
+          icon: iconSVG
         });
 
         const infoWindow = new google.maps.InfoWindow({
@@ -123,7 +132,7 @@
         if (loc.name !== "Harlem, NY") msBounds.extend(marker.position);
       });
 
-      // Zoom to Mississippi markers on load
+      // Fit Mississippi markers on load
       map.fitBounds(msBounds);
 
       // Function to zoom to NY
@@ -133,12 +142,10 @@
         map.setZoom(12);
       }
 
-      // Check if page loaded with #NY hash
-      if (window.location.hash === '#NY') {
-        zoomToNY();
-      }
+      // Check hash for #NY
+      if (window.location.hash === '#NY') zoomToNY();
 
-      // Go to NY button click
+      // Button listener
       document.getElementById('go-ny').addEventListener('click', () => {
         window.location.hash = '#NY';
         zoomToNY();
@@ -147,7 +154,3 @@
   </script>
 </body>
 </html>
-
-
-
-
