@@ -48,7 +48,7 @@
       padding: 10px 14px;
       border-radius: 10px;
       background: rgba(0,0,0,0.9);
-      color: #fffff;
+      color: #fff; /* fixed */
       text-shadow: 0 0 6px #ff00ff, 0 0 10px #00ffff;
       border: 2px solid #ff00ff;
       box-shadow: 0 0 15px #00ffff, 0 0 25px #ff00ff;
@@ -76,6 +76,17 @@
       transform: translate(-50%, -50%);
       animation: pulse 2s infinite;
       opacity: 0.6;
+    }
+
+    /* ===== Neon Label ===== */
+    .neon-label {
+      position: absolute;
+      transform: translate(-50%, -150%);
+      font-size: 12px;
+      font-weight: bold;
+      color: #fff;
+      text-shadow: 0 0 6px #ff00ff, 0 0 12px #00ffff;
+      pointer-events: none; /* so clicks still hit the marker */
     }
 
     /* ===== Color Variants ===== */
@@ -136,27 +147,41 @@
         onAdd() {
           this.div = document.createElement("div");
           this.div.className = "neon-marker " + this.colorClass;
-          this.div.title = this.name;
+
+          // Create a label element
+          this.label = document.createElement("div");
+          this.label.className = "neon-label";
+          this.label.innerText = "Click Here";
+
+          // Wrap marker + label together
+          const container = document.createElement("div");
+          container.style.position = "absolute";
+          container.appendChild(this.div);
+          container.appendChild(this.label);
+          this.container = container;
+
+          // Marker click
           this.div.addEventListener("click", () => {
             map.panTo(this.position);
             map.setZoom(12);
             setTimeout(() => window.open(this.url, "_blank"), 600);
           });
+
           const panes = this.getPanes();
-          panes.overlayMouseTarget.appendChild(this.div);
+          panes.overlayMouseTarget.appendChild(container);
         }
         draw() {
           const overlayProjection = this.getProjection();
           const pos = overlayProjection.fromLatLngToDivPixel(this.position);
-          if (pos) {
-            this.div.style.left = pos.x + "px";
-            this.div.style.top = pos.y + "px";
+          if (pos && this.container) {
+            this.container.style.left = pos.x + "px";
+            this.container.style.top = pos.y + "px";
           }
         }
         onRemove() {
-          if (this.div) {
-            this.div.parentNode.removeChild(this.div);
-            this.div = null;
+          if (this.container) {
+            this.container.parentNode.removeChild(this.container);
+            this.container = null;
           }
         }
       }
