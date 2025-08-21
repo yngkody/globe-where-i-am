@@ -112,17 +112,26 @@
         zoom: 7,
         center: { lat: 32.3547, lng: -89.3985 },
         disableDefaultUI: true,
-        styles: [
+       styles: [
           { elementType: 'geometry', stylers: [{ color: '#111' }] },
-          { elementType: 'labels.text.fill', stylers: [{ color: '#fff' }] },
           { elementType: 'labels.text.stroke', stylers: [{ color: '#000' }] },
+        
+          // force ALL labels white
+          { elementType: 'labels.text.fill', stylers: [{ color: '#ffffff' }] },
+        
+          // specifically force city names (localities) white
+          {
+            featureType: 'administrative.locality',
+            elementType: 'labels.text.fill',
+            stylers: [{ color: '#ffffff' }]
+          },
+        
+          // water / roads / land
           { featureType: 'water', elementType: 'geometry', stylers: [{ color: '#000' }] },
           { featureType: 'road', elementType: 'geometry', stylers: [{ color: '#333' }] },
           { featureType: 'poi', elementType: 'geometry', stylers: [{ color: '#222' }] },
           { featureType: 'landscape', elementType: 'geometry', stylers: [{ color: '#1a1a1a' }] }
-        ]
-      });
-
+        ];
       const locations = [
         { name: 'Gulfport High', lat: 30.3928, lng: -89.0284, url: 'https://www.yngkody.com/gulfport-high', colorClass: 'pink' },
         { name: 'USM Gulf Park', lat: 30.3473, lng: -89.1640, url: 'https://www.yngkody.com/usm-gulf-park', colorClass: 'blue' },
