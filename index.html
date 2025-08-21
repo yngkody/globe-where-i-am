@@ -5,7 +5,6 @@
   <title>Neon Interactive Map</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <!-- Google Fonts / optional -->
   <style>
     html, body {
       margin: 0;
@@ -85,7 +84,6 @@
     .neon-label.pink { color: #ff4de1 !important; }
     .neon-label.blue { color: #00f0ff !important; }
     .neon-label.purple { color: #a64dff !important; }
-
   </style>
 </head>
 <body>
@@ -99,10 +97,10 @@ function initMap() {
   const map = new google.maps.Map(document.getElementById("map"), {
     zoom: 7,
     center: { lat: 32.3547, lng: -89.3985 },
-    disableDefaultUI: true,
+    disableDefaultUI: false, // show default UI including city names
     styles: [
       { elementType:'geometry', stylers:[{color:'#111'}] },
-      { elementType:'labels', stylers:[{visibility:'off'}] }, // hide default labels
+      { elementType:'labels.text.fill', stylers:[{color:'#fff'}] }, // make city names white
       { featureType:'water', elementType:'geometry', stylers:[{color:'#000'}] },
       { featureType:'road', elementType:'geometry', stylers:[{color:'#333'}] },
       { featureType:'poi', elementType:'geometry', stylers:[{color:'#222'}] },
@@ -117,7 +115,6 @@ function initMap() {
     { name:'Harlem, NY', lat:40.8116, lng:-73.9465, url:'https://www.yngkody.com/harlem-ny', color:'pink' }
   ];
 
-  // Neon Marker class
   class NeonMarker extends google.maps.OverlayView {
     constructor(position,map,name,url,color){
       super(); this.position=position; this.map=map; this.name=name; this.url=url; this.color=color; this.div=null; this.setMap(map);
@@ -130,12 +127,11 @@ function initMap() {
     }
     draw(){
       const pos=this.getProjection().fromLatLngToDivPixel(this.position);
-      if(pos&&this.div){this.div.style.left=pos.x+"px"; this.div.style.top=pos.y+"px";}
+      if(pos&&this.div){ this.div.style.left=pos.x+"px"; this.div.style.top=pos.y+"px"; }
     }
     onRemove(){ if(this.div){ this.div.parentNode.removeChild(this.div); this.div=null; } }
   }
 
-  // Neon Label class
   class NeonLabel extends google.maps.OverlayView {
     constructor(position,map,text,color){
       super(); this.position=position; this.map=map; this.text=text; this.color=color; this.div=null; this.setMap(map);
@@ -161,7 +157,7 @@ function initMap() {
   });
   map.fitBounds(bounds);
 
-  // Go to NY
+  // Go to NY button
   function zoomToNY(){ const ny={lat:40.8116,lng:-73.9465}; map.panTo(ny); map.setZoom(12); }
   if(window.location.hash==="#NY") zoomToNY();
   document.getElementById("go-ny").addEventListener("click",()=>{
@@ -169,3 +165,6 @@ function initMap() {
   });
 }
 </script>
+
+</body>
+</html>
